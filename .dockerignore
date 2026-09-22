@@ -1,0 +1,23 @@
+# Include only production build inputs.
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.server.json
+!vite.config.ts
+!LICENSE
+!server/
+!server/src/
+!server/src/**
+!shared/
+!shared/**
+!web/
+!web/**
+
+# Keep credentials and generated files out of any included directory.
+**/node_modules/
+**/.env
+**/.env.*
+**/*.local
+**/*.log
+**/.DS_Store

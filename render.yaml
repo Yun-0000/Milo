@@ -1,0 +1,17 @@
+# Single-service Docker deployment.
+services:
+  - type: web
+    name: milo
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      # Dashboard secret. Never commit a real key.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: MILO_ACCESS_CODE
+        sync: false
+      # Matches Dockerfile EXPOSE 3000. The app also honors Render's auto PORT.
+      - key: PORT
+        value: "3000"

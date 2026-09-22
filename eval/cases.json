@@ -1,0 +1,528 @@
+{
+  "version": 1,
+  "fixtureTargetMatches": 10,
+  "cases": [
+    {
+      "id": "mixed-true-false",
+      "title": "One supported claim and one contradicted claim",
+      "category": "mixed_true_false",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Did WHO declare COVID-19 a pandemic in March 2020, or in 2022?"
+      },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "WHO declared COVID-19 a pandemic in March 2020.", "priority": 1 },
+          { "id": "c2", "text": "WHO first declared COVID-19 a pandemic in 2022.", "priority": 2 }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://www.who.int/news/item/27-04-2020-who-timeline---covid-19",
+            "finalUrl": "https://www.who.int/news/item/27-04-2020-who-timeline---covid-19",
+            "title": "WHO timeline — COVID-19",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "11 March 2020: WHO makes the assessment that COVID-19 can be characterized as a pandemic.",
+            "kind": "fetched",
+            "claimIds": ["c1", "c2"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "WHO timeline states 11 March 2020.", "citationIds": ["f1"] },
+            { "id": "c2", "verdict": "contradicted", "basis": "The declaration was in 2020, not 2022.", "citationIds": ["f1"] }
+          ],
+          "spokenSummary": "March 2020 is supported; 2022 is contradicted."
+        }
+      },
+      "reference": {
+        "claims": [
+          { "id": "c1", "verdict": "supported" },
+          { "id": "c2", "verdict": "contradicted" }
+        ]
+      }
+    },
+    {
+      "id": "omitted-conditions",
+      "title": "Approval claim omits age and indication limits",
+      "category": "omitted_conditions",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Is this drug FDA approved?"
+      },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "The drug is FDA approved for everyone.", "priority": 1, "conditions": [] }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/example",
+            "finalUrl": "https://www.accessdata.fda.gov/drugsatfda_docs/label/example",
+            "title": "Prescribing information",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "Indicated only for adults 18 years and older with laboratory-confirmed condition X. Not approved for pediatric use.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "partial",
+              "basis": "Approved only for adults 18+ with condition X, not everyone.",
+              "citationIds": ["f1"]
+            }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "partial" }] }
+    },
+    {
+      "id": "stale-news",
+      "title": "2022 IPO headline presented as current",
+      "category": "stale_news",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Is Company Northwind going public next week?"
+      },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "Northwind will IPO next week.", "priority": 1, "time": "next week" }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://example.com/press/2022-03-northwind-ipo",
+            "finalUrl": "https://example.com/press/2022-03-northwind-ipo",
+            "title": "Northwind announces IPO plans",
+            "publishedAt": "2022-03-04",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "March 4, 2022 — Northwind said it plans to go public next week. The 2022 offering was later withdrawn.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "contradicted",
+              "basis": "Fetched page is a March 2022 announcement; the offering was withdrawn.",
+              "citationIds": ["f1"]
+            }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "contradicted" }] }
+    },
+    {
+      "id": "missing-sources",
+      "title": "Model cites search snippets as proof",
+      "category": "missing_sources",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Did the ministry ban the export today?"
+      },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "The ministry banned the export today.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "s1",
+            "url": "https://news.example/search?q=ban",
+            "finalUrl": "https://news.example/search?q=ban",
+            "title": "Search hit",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "Ministry reportedly considering an export ban…",
+            "kind": "search_only",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "Search snippet says ban.", "citationIds": ["s1"] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "blurry-screenshot",
+      "title": "Unreadable screenshot leaves the claim unchecked",
+      "category": "blurry_screenshot",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Is the number on this screenshot correct?",
+        "screenshot": { "quality": "blurry", "notes": "Digits unreadable after crop" }
+      },
+      "fixture": {
+        "claims": [
+          {
+            "id": "c1",
+            "text": "The on-screen figure is 8.2 million.",
+            "priority": 1,
+            "unchecked": true
+          }
+        ],
+        "evidence": [],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "Guessed the blurry number.", "citationIds": [] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "reprint-chain",
+      "title": "Identical wire copy is not independent confirmation",
+      "category": "reprint_chain",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Is this independently confirmed by several outlets?"
+      },
+      "fixture": {
+        "claims": [
+          {
+            "id": "c1",
+            "text": "The resignation was independently confirmed by several outlets.",
+            "priority": 1
+          }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://outlet-a.example/story",
+            "finalUrl": "https://outlet-a.example/story",
+            "title": "Official resigns",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "CITY (AP) — The minister resigned Tuesday after the audit, a spokesperson said.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          },
+          {
+            "id": "f2",
+            "url": "https://outlet-b.example/story",
+            "finalUrl": "https://outlet-b.example/story",
+            "title": "Minister resigns",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "CITY (AP) — The minister resigned Tuesday after the audit, a spokesperson said.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "supported",
+              "basis": "Independently confirmed by several outlets repeating the same sentences.",
+              "citationIds": ["f1", "f2"]
+            }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "insufficient-evidence",
+      "title": "Fetched page has no usable facts",
+      "category": "insufficient_evidence",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Did the agency publish the final rule?" },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "The agency published the final rule yesterday.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://agency.example/login",
+            "finalUrl": "https://agency.example/login",
+            "title": "Sign in",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "Please sign in to continue.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "insufficient",
+              "basis": "Fetched page is a login wall with no rule text.",
+              "citationIds": ["f1"]
+            }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "supported-primary",
+      "title": "Official notice supports the claim",
+      "category": "mixed_true_false",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Did NIST publish FIPS 203?" },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "NIST published FIPS 203.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://csrc.nist.gov/pubs/fips/203/final",
+            "finalUrl": "https://csrc.nist.gov/pubs/fips/203/final",
+            "title": "FIPS 203",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard, is a final publication.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "NIST final publication page.", "citationIds": ["f1"] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "supported" }] }
+    },
+    {
+      "id": "contradicted-denial",
+      "title": "Official denial contradicts the rumor",
+      "category": "mixed_true_false",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Did the company confirm the acquisition?" },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "The company confirmed it acquired Rivermead.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://ir.example.com/denial",
+            "finalUrl": "https://ir.example.com/denial",
+            "title": "Statement",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "We deny reports of an acquisition of Rivermead. No transaction has been agreed.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "contradicted", "basis": "Official denial on the IR page.", "citationIds": ["f1"] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "contradicted" }] }
+    },
+    {
+      "id": "search-snippet-overclaim",
+      "title": "Blocked fetch cannot support a verdict",
+      "category": "missing_sources",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Is the PDF the original statute?" },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "This PDF is the original statute.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "b1",
+            "url": "https://127.0.0.1/statute.pdf",
+            "finalUrl": "https://127.0.0.1/statute.pdf",
+            "title": "Blocked",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "",
+            "kind": "blocked",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "Filename looks official.", "citationIds": ["b1"] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "stale-reprint",
+      "title": "Old reprint presented as breaking news",
+      "category": "stale_news",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Did the storm make landfall today?" },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "The storm made landfall today.", "priority": 1, "time": "today" }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://archive.example/2021-storm",
+            "finalUrl": "https://archive.example/2021-storm",
+            "title": "Storm makes landfall",
+            "publishedAt": "2021-08-29",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "August 29, 2021 — The storm made landfall this morning. This page is an archived reprint.",
+            "kind": "fetched",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "contradicted",
+              "basis": "Archived 2021 reprint, not a 2026 landfall.",
+              "citationIds": ["f1"]
+            }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "contradicted" }] }
+    },
+    {
+      "id": "blurry-plus-missing",
+      "title": "Blurry crop and no fetched sources",
+      "category": "blurry_screenshot",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": {
+        "question": "Does this chart show a 40% increase?",
+        "screenshot": { "quality": "blurry", "notes": "Axis labels unreadable" }
+      },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "The chart shows a 40% increase.", "priority": 1, "unchecked": true }
+        ],
+        "evidence": [
+          {
+            "id": "s1",
+            "url": "https://charts.example/guess",
+            "finalUrl": "https://charts.example/guess",
+            "title": "Similar chart",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "A chart somewhere showed growth.",
+            "kind": "search_only",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "supported", "basis": "Looks like 40%.", "citationIds": ["s1"] }
+          ]
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "partial-plus-unsupported",
+      "title": "Partial condition plus a second unsupported rumor",
+      "category": "omitted_conditions",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Is the vaccine approved and already mandatory nationwide?" },
+      "fixture": {
+        "claims": [
+          { "id": "c1", "text": "The vaccine is approved.", "priority": 1 },
+          { "id": "c2", "text": "The vaccine is mandatory nationwide.", "priority": 2 }
+        ],
+        "evidence": [
+          {
+            "id": "f1",
+            "url": "https://www.fda.gov/example-eua",
+            "finalUrl": "https://www.fda.gov/example-eua",
+            "title": "Authorization",
+            "fetchedAt": "2026-09-19T00:00:00Z",
+            "excerpt": "Emergency use authorization for adults 18+ in specified settings. Not a nationwide mandate.",
+            "kind": "fetched",
+            "claimIds": ["c1", "c2"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            { "id": "c1", "verdict": "partial", "basis": "EUA for adults 18+ only.", "citationIds": ["f1"] },
+            { "id": "c2", "verdict": "contradicted", "basis": "Authorization is not a nationwide mandate.", "citationIds": ["f1"] }
+          ]
+        }
+      },
+      "reference": {
+        "claims": [
+          { "id": "c1", "verdict": "partial" },
+          { "id": "c2", "verdict": "contradicted" }
+        ]
+      }
+    },
+    {
+      "id": "sky-is-blue-nasa",
+      "title": "NASA search/block cannot paper over sky-is-blue as Supported",
+      "category": "insufficient_evidence",
+      "mode": "fixture",
+      "requiresLiveKey": false,
+      "input": { "question": "Is the sky blue?" },
+      "fixture": {
+        "claims": [{ "id": "c1", "text": "The sky is blue.", "priority": 1 }],
+        "evidence": [
+          {
+            "id": "s1",
+            "url": "https://science.nasa.gov/search?q=why+is+the+sky+blue",
+            "finalUrl": "https://science.nasa.gov/search?q=why+is+the+sky+blue",
+            "title": "NASA search: why is the sky blue",
+            "fetchedAt": "2026-09-20T00:00:00Z",
+            "excerpt": "Science.nasa.gov result: Why is the sky blue? Rayleigh scattering…",
+            "kind": "search_only",
+            "claimIds": ["c1"]
+          },
+          {
+            "id": "b1",
+            "url": "https://science.nasa.gov/earth/earth-atmosphere/why-is-the-sky-blue",
+            "finalUrl": "https://science.nasa.gov/earth/earth-atmosphere/why-is-the-sky-blue",
+            "title": "Why is the sky blue? - NASA Science",
+            "fetchedAt": "2026-09-20T00:00:00Z",
+            "excerpt": "",
+            "kind": "blocked",
+            "claimIds": ["c1"]
+          }
+        ],
+        "modelJudgment": {
+          "claims": [
+            {
+              "id": "c1",
+              "verdict": "supported",
+              "basis": "NASA science page explains Rayleigh scattering.",
+              "citationIds": ["s1", "b1"]
+            }
+          ],
+          "spokenSummary": "Supported. NASA says the sky is blue."
+        }
+      },
+      "reference": { "claims": [{ "id": "c1", "verdict": "insufficient" }] }
+    },
+    {
+      "id": "live-key-voice",
+      "title": "Real gpt-live-1 WebRTC session",
+      "category": "live_capability",
+      "mode": "live-key",
+      "requiresLiveKey": true,
+      "input": { "question": "Can Milo complete a real Live plus check session?" },
+      "notes": "Skipped in fixture mode. Requires OPENAI_API_KEY, Chrome getUserMedia, and a real RTCPeerConnection offer. Voice acceptance is not passed by scaffolding."
+    },
+    {
+      "id": "live-key-evidence",
+      "title": "Real terra evidence pipeline",
+      "category": "live_capability",
+      "mode": "live-key",
+      "requiresLiveKey": true,
+      "input": { "question": "Did NIST publish FIPS 203?" },
+      "notes": "Skipped in fixture mode. Run: OPENAI_API_KEY=... npm run eval:live against a running server."
+    }
+  ]
+}

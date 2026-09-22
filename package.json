@@ -1,0 +1,44 @@
+{
+  "name": "milo",
+  "version": "0.1.0",
+  "description": "A voice research companion with on-demand screenshots and sources you can inspect.",
+  "repository": { "type": "git", "url": "https://github.com/Yun-0000/Milo.git" },
+  "homepage": "https://devpost.com/software/milo-ni2mch",
+  "bugs": { "url": "https://github.com/Yun-0000/Milo/issues" },
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "tsx watch server/src/index.ts",
+    "dev:web": "vite",
+    "build": "vite build && tsc -p tsconfig.server.json",
+    "start": "node dist/server/src/index.js",
+    "test": "tsx --test tests/*.test.ts tests/*.test.tsx",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "eval:live": "tsx scripts/eval-live.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "openai": "^7.19.0",
+    "pdfjs-dist": "^6.3.289",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
